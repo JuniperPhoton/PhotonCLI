@@ -39,6 +39,7 @@ photoncli <files...> --output-dir <path> [options]
 | `--prefix` | `-p` | none | String prepended to each output filename. |
 | `--suffix` | `-s` | `-converted` | String appended to each output filename before the extension. Pass `--suffix=` to use an empty suffix. |
 | `--recursive` / `--no-recursive` | | `--recursive` | When a directory is given as input, whether to recurse into subdirectories. |
+| `--quality` | `-q` | none | Output compression quality from `0.0` (lowest) to `1.0` (highest). Omit to use the system default. Applies to JPEG and HEIF. |
 
 ## Examples
 

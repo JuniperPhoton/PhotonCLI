@@ -14,4 +14,5 @@ struct ProcessingParams {
     let prefix: String?
     let suffix: String
     let recursive: Bool
+    let quality: Double?
 }

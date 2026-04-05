@@ -33,6 +33,9 @@ struct PhotonCLICommand: ParsableCommand {
     @Flag(name: .long, inversion: .prefixedNo, help: "Recursively process files in subdirectories (default: true).")
     var recursive: Bool = true
 
+    @Option(name: .shortAndLong, help: "Output quality from 0.0 (lowest) to 1.0 (highest). Omit to use the system default.")
+    var quality: Double?
+
     func run() throws {
         let fileURLs = files.map { URL(fileURLWithPath: $0) }
         let outputDirURL = URL(fileURLWithPath: outputDir)
@@ -45,7 +48,8 @@ struct PhotonCLICommand: ParsableCommand {
             outputDir: outputDirURL,
             prefix: prefix,
             suffix: suffix,
-            recursive: recursive
+            recursive: recursive,
+            quality: quality
         )
 
         let outputFiles = try process(params: params)

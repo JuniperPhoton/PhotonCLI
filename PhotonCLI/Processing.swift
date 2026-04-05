@@ -51,6 +51,10 @@ func process(params: ProcessingParams) throws -> [URL] {
             options[.hdrGainMapImage] = scaled(gainMap, longestSide: params.longestSide)
         }
         
+        if let quality = params.quality {
+            options[CIImageRepresentationOption(rawValue: kCGImageDestinationLossyCompressionQuality as String)] = quality
+        }
+
         switch params.outputFormat {
         case .heif:
             try ciContext.writeHEIFRepresentation(
