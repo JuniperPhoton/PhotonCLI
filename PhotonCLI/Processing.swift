@@ -1,5 +1,6 @@
 import Foundation
 import CoreImage
+import UniformTypeIdentifiers
 
 /// Process photos with the given parameters.
 /// - Parameter params: The processing parameters.
@@ -7,10 +8,16 @@ import CoreImage
 func process(params: ProcessingParams) throws -> [URL] {
     try FileManager.default.createDirectory(at: params.outputDir, withIntermediateDirectories: true)
 
+    let supportedTypes: [UTType] = [.png, .jpeg, .heic, .tiff]
+    let imageFiles = params.files.filter { url in
+        guard let type = UTType(filenameExtension: url.pathExtension) else { return false }
+        return supportedTypes.contains { type.conforms(to: $0) }
+    }
+
     let ciContext = CIContext()
     var outputFiles: [URL] = []
 
-    for fileURL in params.files {
+    for fileURL in imageFiles {
         let didStartAccessing = fileURL.startAccessingSecurityScopedResource()
         defer {
             if didStartAccessing { fileURL.stopAccessingSecurityScopedResource() }
