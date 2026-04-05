@@ -1,6 +1,6 @@
 # PhotonCLI
 
-A CLI tool to batch process images with options for format conversion, HDR, resizing, and output naming.
+A CLI tool to batch process images with options for format conversion, HDR, resizing, cropping, and output naming.
 
 ## Supported Input Formats
 
@@ -40,6 +40,8 @@ photoncli <files...> --output-dir <path> [options]
 | `--suffix` | `-s` | `-converted` | String appended to each output filename before the extension. Pass `--suffix=` to use an empty suffix. |
 | `--recursive` / `--no-recursive` | | `--recursive` | When a directory is given as input, whether to recurse into subdirectories. |
 | `--quality` | `-q` | none | Output compression quality from `0.0` (lowest) to `1.0` (highest). Omit to use the system default. Applies to JPEG and HEIF. |
+| `--inset` | | none | Crop a uniform number of pixels from all four sides. |
+| `--inset-ltrb` | | none | Crop per-side in pixels, specified as `"left,top,right,bottom"` (e.g. `"10,20,10,20"`). Takes priority over `--inset` if both are provided. |
 
 ## Examples
 
@@ -66,4 +68,14 @@ photoncli photo.jpg --output-dir ./out --prefix=export- --suffix=
 Non-recursive directory processing:
 ```zsh
 photoncli ./photos --output-dir ./out --no-recursive
+```
+
+Crop 10 pixels uniformly from all sides:
+```zsh
+photoncli ./photos --output-dir ./out --inset 10
+```
+
+Crop with different insets per side (left, top, right, bottom):
+```zsh
+photoncli ./photos --output-dir ./out --inset-ltrb "10,20,10,20"
 ```

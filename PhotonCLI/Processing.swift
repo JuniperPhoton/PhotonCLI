@@ -37,10 +37,11 @@ func process(params: ProcessingParams) throws -> [URL] {
         
         guard let ciImage = CIImage(contentsOf: fileURL) else { continue }
         
-        let outputImage = scaled(ciImage, longestSide: params.longestSide)
+        let croppedImage = cropped(ciImage, inset: params.inset)
+        let outputImage = scaled(croppedImage, longestSide: params.longestSide)
         let colorSpace = ciImage.colorSpace ?? CGColorSpace(name: CGColorSpace.displayP3)!
         
-        let outputExtension = params.outputFormat == .heif ? "heic" : "jpg"
+        let outputExtension = params.outputFormat.fileExtension
         let baseName = fileURL.deletingPathExtension().lastPathComponent
         let outputName = (params.prefix ?? "") + baseName + params.suffix + "." + outputExtension
         let outputURL = params.outputDir.appendingPathComponent(outputName)
@@ -48,7 +49,9 @@ func process(params: ProcessingParams) throws -> [URL] {
         var options: [CIImageRepresentationOption: Any] = [:]
         if params.hdr,
            let gainMap = CIImage(contentsOf: fileURL, options: [.auxiliaryHDRGainMap: true]) {
-            options[.hdrGainMapImage] = scaled(gainMap, longestSide: params.longestSide)
+            let gainMapInset = params.inset.map { scaledInset($0, from: ciImage.extent.size, to: gainMap.extent.size) }
+            let processedGainMap = scaled(cropped(gainMap, inset: gainMapInset), longestSide: params.longestSide)
+            options[.hdrGainMapImage] = processedGainMap
         }
         
         if let quality = params.quality {
@@ -77,6 +80,31 @@ func process(params: ProcessingParams) throws -> [URL] {
     }
     
     return outputFiles
+}
+
+private func scaledInset(_ inset: EdgeInsets, from sourceSize: CGSize, to targetSize: CGSize) -> EdgeInsets {
+    let scaleX = targetSize.width / sourceSize.width
+    let scaleY = targetSize.height / sourceSize.height
+    return EdgeInsets(
+        left: inset.left * scaleX,
+        top: inset.top * scaleY,
+        right: inset.right * scaleX,
+        bottom: inset.bottom * scaleY
+    )
+}
+
+private func cropped(_ image: CIImage, inset: EdgeInsets?) -> CIImage {
+    guard let inset, !inset.isEmpty else { return image }
+    let extent = image.extent
+    let rect = CGRect(
+        x: extent.minX + inset.left,
+        y: extent.minY + inset.bottom,
+        width: extent.width - inset.width,
+        height: extent.height - inset.height
+    )
+    guard rect.width > 0, rect.height > 0 else { return image }
+    return image.cropped(to: rect)
+        .transformed(by: CGAffineTransform(translationX: -rect.minX, y: -rect.minY))
 }
 
 private func scaled(_ image: CIImage, longestSide: Double?) -> CIImage {

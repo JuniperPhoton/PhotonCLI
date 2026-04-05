@@ -36,9 +36,27 @@ struct PhotonCLICommand: ParsableCommand {
     @Option(name: .shortAndLong, help: "Output quality from 0.0 (lowest) to 1.0 (highest). Omit to use the system default.")
     var quality: Double?
 
+    @Option(name: .long, help: "Uniform inset (in pixels) to crop from all sides.")
+    var inset: Double?
+
+    @Option(name: .long, help: "Per-side inset (in pixels) as \"left,top,right,bottom\" to crop from each edge.")
+    var insetLtrb: String?
+
     func run() throws {
         let fileURLs = files.map { URL(fileURLWithPath: $0) }
         let outputDirURL = URL(fileURLWithPath: outputDir)
+
+        let resolvedInset: EdgeInsets?
+        if let ltrb = insetLtrb {
+            guard let parsed = EdgeInsets(ltrb: ltrb) else {
+                throw ValidationError("--inset-ltrb must be four comma-separated numbers, e.g. \"10,10,10,10\".")
+            }
+            resolvedInset = parsed
+        } else if let uniform = inset {
+            resolvedInset = EdgeInsets(uniform: uniform)
+        } else {
+            resolvedInset = nil
+        }
 
         let params = ProcessingParams(
             files: fileURLs,
@@ -49,7 +67,8 @@ struct PhotonCLICommand: ParsableCommand {
             prefix: prefix,
             suffix: suffix,
             recursive: recursive,
-            quality: quality
+            quality: quality,
+            inset: resolvedInset
         )
 
         let outputFiles = try process(params: params)

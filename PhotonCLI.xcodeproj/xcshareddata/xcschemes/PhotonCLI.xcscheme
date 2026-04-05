@@ -58,6 +58,10 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "--inset 0"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "-q 0.9"
             isEnabled = "YES">
          </CommandLineArgument>
