@@ -20,6 +20,7 @@ BINARY=$(find "$ARCHIVE_PATH" -type f -name "$SCHEME" | head -1)
 
 mkdir -p "$OUTPUT_DIR"
 cp "$BINARY" "$OUTPUT_DIR/$SCHEME"
+strip "$OUTPUT_DIR/$SCHEME"
 
 rm -rf "$ARCHIVE_PATH"
 

@@ -5,7 +5,7 @@ extension OutputFormat: ExpressibleByArgument {}
 
 struct PhotonCLICommand: ParsableCommand {
     static var configuration = CommandConfiguration(
-        commandName: "photon",
+        commandName: "photoncli",
         abstract: "Process photos with various output options."
     )
 
