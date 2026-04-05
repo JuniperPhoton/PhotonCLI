@@ -13,4 +13,5 @@ struct ProcessingParams {
     let outputDir: URL
     let prefix: String?
     let suffix: String
+    let recursive: Bool
 }

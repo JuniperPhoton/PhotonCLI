@@ -30,6 +30,9 @@ struct PhotonCLICommand: ParsableCommand {
     @Option(name: .shortAndLong, help: "Suffix added to each output filename before the extension.")
     var suffix: String = "-converted"
 
+    @Flag(name: .long, inversion: .prefixedNo, help: "Recursively process files in subdirectories (default: true).")
+    var recursive: Bool = true
+
     func run() throws {
         let fileURLs = files.map { URL(fileURLWithPath: $0) }
         let outputDirURL = URL(fileURLWithPath: outputDir)
@@ -41,7 +44,8 @@ struct PhotonCLICommand: ParsableCommand {
             longestSide: longestSide,
             outputDir: outputDirURL,
             prefix: prefix,
-            suffix: suffix
+            suffix: suffix,
+            recursive: recursive
         )
 
         let outputFiles = try process(params: params)

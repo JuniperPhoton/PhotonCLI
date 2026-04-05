@@ -58,7 +58,11 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "/Users/juniperphoton/Dev/AllApps/PhotonCLI/Example/photoncam-sample-01.jpg"
+            argument = "-f jpeg"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/juniperphoton/Dev/AllApps/PhotonCLI/Example/"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
