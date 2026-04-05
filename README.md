@@ -67,7 +67,3 @@ Non-recursive directory processing:
 ```zsh
 photoncli ./photos --output-dir ./out --no-recursive
 ```
-
-## Output
-
-Each processed file is printed to stdout as an absolute path, one per line.
